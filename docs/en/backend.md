@@ -1,25 +1,5 @@
-Coalinfer is an LLM inference engine designed for fast and efficient coal production.
-This is a fork of [Coalinfer](https://github.com/sgl-project/sglang) with some modifications and additional features.
-
-## Install
-
-```
-# Use the last release branch
-git clone https://github.com/intervitens/coalinfer.git
-cd coalinfer
-
-pip install --upgrade pip
-pip install -e "python[all]"
-
-# Install FlashInfer CUDA kernels
-pip install flashinfer -i https://flashinfer.ai/whl/cu121/torch2.4/
-```
-
-### Common Notes
-- [FlashInfer](https://github.com/flashinfer-ai/flashinfer) is currently one of the dependencies that must be installed for Coalinfer. It only supports sm75 and above. If you encounter any FlashInfer-related issues on sm75+ devices (e.g., T4, A10, A100, L4, L40S, H100), consider using Triton's kernel by `--disable-flashinfer --disable-flashinfer-sampling` and raise an issue.
-
-## Backend: Coalinfer Runtime
-The Coalinfer Runtime is an efficient serving engine.
+## Backend: Coalinfer Runtime (SRT)
+The Coalinfer Runtime (SRT) is an efficient serving engine.
 
 ### Quick Start
 Launch a server
@@ -35,8 +15,7 @@ curl http://localhost:30000/generate \
     "text": "Once upon a time,",
     "sampling_params": {
       "max_new_tokens": 16,
-      "temperature": 1,
-      "min_p": 0.1
+      "temperature": 0
     }
   }'
 ```
@@ -54,7 +33,7 @@ client = openai.Client(
 response = client.completions.create(
 	model="default",
 	prompt="The capital of France is",
-	temperature=1,
+	temperature=0,
 	max_tokens=32,
 )
 print(response)
@@ -103,13 +82,13 @@ python -m coalinfer.launch_server --model-path meta-llama/Meta-Llama-3-8B-Instru
 - To enable fp8 weight quantization, you can add `--quantization fp8` on a fp16 checkpoint or directly load a fp8 checkpoint without specifying any arguments.
 - To enable fp8 kv cache quanzation, you can add `--kv-cache-dtype fp8_e5m2`.
 - If the model does not have a template in the Hugging Face tokenizer, you can specify a [custom chat template](docs/en/custom_chat_template.md).
-- Add `--nnodes 2` to run tensor parallelism on multiple nodes. If you have two nodes with two GPUs on each node and want to run TP=4, let `coal-dev-0` be the hostname of the first node and `50000` be an available port.
+- Add `--nnodes 2` to run tensor parallelism on multiple nodes. If you have two nodes with two GPUs on each node and want to run TP=4, let `sgl-dev-0` be the hostname of the first node and `50000` be an available port.
 ```
 # Node 0
-python -m coalinfer.launch_server --model-path meta-llama/Meta-Llama-3-8B-Instruct --tp 4 --nccl-init coal-dev-0:50000 --nnodes 2 --node-rank 0
+python -m coalinfer.launch_server --model-path meta-llama/Meta-Llama-3-8B-Instruct --tp 4 --nccl-init sgl-dev-0:50000 --nnodes 2 --node-rank 0
 
 # Node 1
-python -m coalinfer.launch_server --model-path meta-llama/Meta-Llama-3-8B-Instruct --tp 4 --nccl-init coal-dev-0:50000 --nnodes 2 --node-rank 1
+python -m coalinfer.launch_server --model-path meta-llama/Meta-Llama-3-8B-Instruct --tp 4 --nccl-init sgl-dev-0:50000 --nnodes 2 --node-rank 1
 ```
  
 ### Supported Models
@@ -136,7 +115,6 @@ python -m coalinfer.launch_server --model-path meta-llama/Meta-Llama-3-8B-Instru
 - ChatGLM
 - InternLM 2
 - Exaone 3
-- MiniCPM / MiniCPM 3
 
 **Embedding Models**
 
@@ -144,7 +122,7 @@ python -m coalinfer.launch_server --model-path meta-llama/Meta-Llama-3-8B-Instru
 - gte-Qwen2
   - `python -m coalinfer.launch_server --model-path Alibaba-NLP/gte-Qwen2-7B-instruct --is-embedding`
 
-Instructions for supporting a new model are [here](https://github.com/intervitens/coalinfer/blob/main/docs/en/model_support.md).
+Instructions for supporting a new model are [here](https://github.com/sgl-project/coalinfer/blob/main/docs/en/model_support.md).
 
 #### Use Models From ModelScope
 <details>
@@ -191,8 +169,3 @@ GLOO_SOCKET_IFNAME=eth0 python3 -m coalinfer.launch_server --model-path meta-lla
   ```
   python3 -m coalinfer.bench_serving --backend coalinfer --num-prompt 10
   ```
-
-
-## Citation And Acknowledgment
-Please cite Coalinfer paper, [Coalinfer: Efficient Execution of Structured Language Model Programs](https://arxiv.org/abs/2312.07104), if you find the project useful.
-We also learned from the design and reused code from the following projects: [Guidance](https://github.com/guidance-ai/guidance), [vLLM](https://github.com/vllm-project/vllm), [LightLLM](https://github.com/ModelTC/lightllm), [FlashInfer](https://github.com/flashinfer-ai/flashinfer), [Outlines](https://github.com/outlines-dev/outlines), and [LMQL](https://github.com/eth-sri/lmql).

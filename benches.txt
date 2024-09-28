@@ -1,0 +1,57 @@
+vanilla python -m sglang.launch_server --model-path meta-llama_Meta-Llama-3-8B-Instruct --port 30000 --tp 4 --enable-torch-compile --disable-radix-cache --mem-fraction-static 0.7
+============ Serving Benchmark Result ============
+Backend:                                 sglang    
+Traffic request rate:                    inf       
+Successful requests:                     1000      
+Benchmark duration (s):                  313.74    
+Total input tokens:                      258890    
+Total generated tokens:                  1027062   
+Total generated tokens (retokenized):    1014837   
+Request throughput (req/s):              3.19      
+Input token throughput (tok/s):          825.16    
+Output token throughput (tok/s):         3273.56   
+----------------End-to-End Latency----------------
+Mean E2E Latency (ms):                   187617.87 
+Median E2E Latency (ms):                 198304.45 
+---------------Time to First Token----------------
+Mean TTFT (ms):                          78852.62  
+Median TTFT (ms):                        39189.41  
+P99 TTFT (ms):                           213116.54 
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          120.66    
+Median TPOT (ms):                        112.85    
+P99 TPOT (ms):                           378.88    
+---------------Inter-token Latency----------------
+Mean ITL (ms):                           108.62    
+Median ITL (ms):                         95.10     
+P99 ITL (ms):                            394.47    
+==================================================
+
+'{"temperature":0.3, "top_p": 0.9, "top_k":20}'
+============ Serving Benchmark Result ============
+Backend:                                 sglang    
+Traffic request rate:                    inf       
+Successful requests:                     1000      
+Benchmark duration (s):                  303.37    
+Total input tokens:                      258890    
+Total generated tokens:                  1027062   
+Total generated tokens (retokenized):    1016786   
+Request throughput (req/s):              3.30      
+Input token throughput (tok/s):          853.39    
+Output token throughput (tok/s):         3385.56   
+----------------End-to-End Latency----------------
+Mean E2E Latency (ms):                   179462.44 
+Median E2E Latency (ms):                 188586.98 
+---------------Time to First Token----------------
+Mean TTFT (ms):                          73880.96  
+Median TTFT (ms):                        36567.63  
+P99 TTFT (ms):                           203676.59 
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          121.36    
+Median TPOT (ms):                        109.79    
+P99 TPOT (ms):                           313.16    
+---------------Inter-token Latency----------------
+Mean ITL (ms):                           105.52    
+Median ITL (ms):                         92.26     
+P99 ITL (ms):                            393.96    
+==================================================
