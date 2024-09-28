@@ -1,5 +1,5 @@
 Coalinfer is an LLM inference engine designed for fast and efficient coal production.
-This is a fork of [Coalinfer](https://github.com/sgl-project/sglang) with some modifications and additional features.
+This is a fork of [SGLang](https://github.com/sgl-project/sglang) with some modifications and additional features.
 
 ## Install
 
